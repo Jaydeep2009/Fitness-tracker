@@ -1,28 +1,33 @@
-# Fitness Tracker
+# IronFrame — Native Android Progress Photo Studio
 
-A private, local-first progress photo studio for documenting muscle-building progress.
+IronFrame is a **native Android app written in Kotlin**, using Jetpack Compose and CameraX. It is not a web app, website, or PWA.
 
 ## Features
 
-- Create separate progress albums (front, side, back, or custom poses).
-- Capture photos with a live camera and an adjustable previous-photo ghost overlay to align framing and posture.
-- Browse and delete photos; review timestamps and notes.
-- Play an album as a timelapse and export the sequence as a WebM video where supported.
-- Download individual photos and export/import a JSON backup.
-- Skeuomorphic, tactile dark-gym interface with embossed controls and analog-inspired details.
+- Create separate albums for front, side, back, or custom poses.
+- Capture photos using the Android camera.
+- Overlay the previous photo on the live camera preview with adjustable opacity to align framing and posture.
+- Browse dated photos and notes, and delete unwanted frames.
+- Play the album's photos in sequence as a timelapse preview.
+- Skeuomorphic, tactile dark-gym interface with embossed surfaces and lime accents.
+- Local-first storage: photo files and album metadata stay on the device; no account or server is required.
 
-## Run locally
+## Open and run
 
-This is a static app and does not need a backend:
+1. Open this repository in the latest Android Studio.
+2. Use JDK 17 and Android SDK 35.
+3. Let Android Studio sync the Gradle project.
+4. Run the `app` configuration on an Android device or emulator (camera hardware is recommended for capture).
+5. Grant camera permission when prompted.
 
-1. Open `index.html` in a modern browser, or serve this directory using a static server.
-2. Allow camera permission when prompted. Camera access generally requires `localhost` or HTTPS.
-3. Use the app on the same browser/device to access locally stored albums.
+## Project structure
 
-## Privacy and storage
+- `app/src/main/java/com/ironframe/fitness/MainActivity.kt` — Jetpack Compose UI, CameraX capture, album/gallery/timelapse flows, and local persistence.
+- `app/src/main/AndroidManifest.xml` — Android app declaration and camera permission.
+- `app/build.gradle.kts` — Android/Kotlin plugins and AndroidX dependencies.
 
-Photos and album data remain in this browser using IndexedDB. They are not sent to GitHub or any server. Browser storage can be cleared by the browser/device; use **Settings → Export backup** regularly if you want a portable copy. Camera permission is used only for live preview and capture.
+## Privacy and limitations
 
-## Browser notes
+Photos are saved in the app's private files directory and album metadata is stored in app preferences. Photos are not uploaded. Uninstalling the app or clearing its data removes local photos.
 
-Camera capture requires a secure context (HTTPS or localhost). Timelapse video export depends on browser support for `MediaRecorder` and WebM. If video export is unavailable, the app can still play the photo sequence for preview.
+The current timelapse feature plays the saved sequence inside the app. Encoding and exporting a video file, importing photos from the system gallery, and a dedicated backup/restore flow are not implemented yet.
