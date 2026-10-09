@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#191a1b">
+  <meta name="description" content="A private, local-first muscle-building progress photo studio.">
+  <title>IronFrame — Progress Studio</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="IronFrame home">
+        <span class="brand-mark">IF</span>
+        <span><strong>IRONFRAME</strong><small>PROGRESS STUDIO</small></span>
+      </a>
+      <button class="icon-button" id="settings-button" title="Settings" aria-label="Settings">⚙</button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">YOUR WORK. YOUR PROOF.</p>
+          <h1>Built <em>day by day.</em></h1>
+          <p class="muted">A private visual log of the work you're putting in.</p>
+        </div>
+        <div class="hero-medallion" aria-hidden="true"><span>EST.</span><strong>01</strong><span>DAY ONE</span></div>
+      </section>
+
+      <section class="stats-strip" aria-label="Progress summary">
+        <div><span class="stat-value" id="album-count">0</span><span class="stat-label">ALBUMS</span></div>
+        <div><span class="stat-value" id="photo-count">0</span><span class="stat-label">FRAMES SAVED</span></div>
+        <div><span class="stat-value" id="streak-count">0</span><span class="stat-label">ACTIVE DAYS</span></div>
+      </section>
+
+      <div class="section-heading">
+        <div><p class="eyebrow">THE ARCHIVE</p><h2>Your albums</h2></div>
+        <button class="primary-button compact" id="new-album-button"><span>＋</span> New album</button>
+      </div>
+      <section id="album-grid" class="album-grid" aria-live="polite"></section>
+
+      <section class="privacy-note">
+        <span class="privacy-icon">▣</span>
+        <div><strong>Your body. Your data.</strong><p>Photos stay in this browser on this device. Nothing is uploaded.</p></div>
+        <span class="lock-mark">⌑</span>
+      </section>
+    </main>
+    <footer><span>IRONFRAME / 001</span><span>SHOW UP. REPEAT.</span></footer>
+  </div>
+
+  <dialog id="album-dialog" class="modal">
+    <form id="album-form" method="dialog">
+      <div class="modal-top"><span class="eyebrow">START A NEW RECORD</span><button class="icon-button close-dialog" type="button" aria-label="Close">×</button></div>
+      <h2>Create album</h2><p class="muted">Choose a pose to keep each frame consistent.</p>
+      <label for="album-name">Album name</label><input id="album-name" maxlength="48" placeholder="e.g. Front relaxed" required>
+      <label for="album-pose">Pose / angle</label>
+      <select id="album-pose"><option>Front</option><option>Side</option><option>Back</option><option>Front double biceps</option><option>Custom pose</option></select>
+      <div class="modal-actions"><button type="button" class="secondary-button close-dialog">Cancel</button><button class="primary-button" type="submit">Create album ↗</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="studio-dialog" class="studio-modal">
+    <div class="studio-layout">
+      <header class="studio-header"><button class="icon-button" id="back-to-home" aria-label="Back">←</button><div><p class="eyebrow" id="studio-kicker">PROGRESS ALBUM</p><h2 id="studio-title">Front</h2></div><button class="icon-button" id="studio-menu" aria-label="Album options">•••</button></header>
+      <nav class="studio-tabs" aria-label="Album sections"><button class="tab active" data-tab="capture">Capture</button><button class="tab" data-tab="gallery">Gallery <span id="tab-photo-count">0</span></button><button class="tab" data-tab="timelapse">Timelapse</button></nav>
+      <section id="capture-panel" class="studio-panel">
+        <div class="camera-frame" id="camera-frame">
+          <video id="camera-video" playsinline autoplay muted></video>
+          <img id="ghost-image" alt="Previous photo alignment overlay">
+          <div class="camera-guides" aria-hidden="true"><span class="guide guide-v"></span><span class="guide guide-h"></span><span class="guide-corner tl"></span><span class="guide-corner tr"></span><span class="guide-corner bl"></span><span class="guide-corner br"></span></div>
+          <div class="camera-status" id="camera-status"><span class="status-dot"></span> CAMERA READY</div>
+          <div class="camera-empty" id="camera-empty"><span class="camera-glyph">◉</span><strong>Ready when you are.</strong><p>Set your phone in the same place each time.</p><button class="primary-button" id="enable-camera">Enable camera</button><label class="secondary-button upload-label">Choose existing photo<input id="upload-photo" type="file" accept="image/*" capture="environment" hidden></label></div>
+          <button class="flip-button" id="flip-camera" title="Switch camera" aria-label="Switch camera">⟳</button>
+        </div>
+        <div class="camera-tools">
+          <label class="range-control">Ghost opacity <input type="range" id="ghost-opacity" min="0" max="80" value="35"><output id="ghost-opacity-value">35%</output></label>
+          <label class="switch-control"><input type="checkbox" id="show-ghost" checked><span class="switch-ui"></span> Previous frame</label>
+        </div>
+        <label class="notes-label" for="photo-note">Note <span>OPTIONAL</span></label><textarea id="photo-note" rows="2" maxlength="240" placeholder="Weight, lighting, how training felt…"></textarea>
+        <div class="capture-actions"><button id="capture-button" class="shutter-button" disabled><span class="shutter-ring">●</span><span>CAPTURE FRAME</span></button><p>Take photos in similar lighting<br>and at the same distance.</p></div>
+      </section>
+      <section id="gallery-panel" class="studio-panel hidden"><div class="panel-heading"><div><h3>Frames in this album</h3><p class="muted" id="gallery-description">Your history, in order.</p></div><button class="secondary-button" id="gallery-add">＋ Add photo</button></div><div id="photo-grid" class="photo-grid"></div></section>
+      <section id="timelapse-panel" class="studio-panel hidden"><div class="timelapse-stage"><div id="timelapse-preview" class="timelapse-preview"><span>YOUR STORY, FRAME BY FRAME</span><strong>▶</strong><small>PLAY YOUR PROGRESS</small></div><div class="timelapse-counter" id="timelapse-counter">0 / 0</div></div><div class="timelapse-controls"><label>Frame interval<select id="frame-interval"><option value="500">0.5 seconds</option><option value="800" selected>0.8 seconds</option><option value="1200">1.2 seconds</option><option value="2000">2 seconds</option></select></label><button class="primary-button" id="play-timelapse">▶ Play sequence</button><button class="secondary-button" id="export-timelapse">⇩ Export video</button></div><p class="muted help-text">Video export is available when this browser supports WebM recording. You can always play the sequence here.</p></section>
+    </div>
+  </dialog>
+
+  <dialog id="settings-dialog" class="modal">
+    <div class="modal-top"><span class="eyebrow">PREFERENCES & PRIVACY</span><button class="icon-button close-dialog" type="button" aria-label="Close">×</button></div>
+    <h2>Settings</h2><p class="muted">Your photos remain stored locally in this browser.</p>
+    <div class="settings-actions"><button class="secondary-button" id="export-backup">⇩ Export backup</button><label class="secondary-button">⇧ Import backup<input id="import-backup" type="file" accept="application/json,.json" hidden></label><button class="secondary-button" id="install-app">＋ Install app</button></div>
+    <p class="fine-print">Keep a backup if these photos matter to you. Clearing browser data may permanently remove locally stored photos.</p>
+  </dialog>
+
+  <dialog id="photo-dialog" class="photo-modal"><button class="icon-button photo-close" id="close-photo" aria-label="Close">×</button><img id="photo-full" alt="Progress photo"><div class="photo-details"><div><strong id="photo-date"></strong><p id="photo-caption"></p></div><button class="secondary-button" id="download-photo">⇩ Save</button><button class="danger-button" id="delete-photo">Delete</button></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
